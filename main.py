@@ -85,7 +85,7 @@ async def on_start_parsing(message: types.Message):
 
 @dp.message_handler(commands=['start'])
 async def on_start(message: types.Message):
-    await bot.send_message(message.chat.id, text='Здравствуйте!, чтобы зарегистрировать группы, перейдите по этой ссылке: https://t.me/facebook_vk_tg_registrationBOT', reply_markup=main_bot_keyboard)
+    await bot.send_message(message.chat.id, text='Здравствуйте!, чтобы зарегистрировать группы, перейдите по этой ссылке: {link}', reply_markup=main_bot_keyboard)
     
 #----------------------------GET CURRENT CHAT ID--------------------------
 @dp.message_handler(commands=['Получить_ID'])
