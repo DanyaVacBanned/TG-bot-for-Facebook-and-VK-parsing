@@ -1,8 +1,10 @@
+#Это скрипт для записи файлов авторизации
+
 import time
 from selenium import webdriver
 from selenium.webdriver.firefox.options import Options
 import pickle
-from webdriver_manager.firefox import GeckoDriverManager
+from webdriver_manager.firefox import GeckoDriverManager 
 
 driver = webdriver.Firefox()
 driver.get('https://web.telegram.org/k/')
