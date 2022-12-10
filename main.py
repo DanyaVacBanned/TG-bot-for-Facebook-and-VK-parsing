@@ -6,10 +6,10 @@ from parseFile import parsing
 from kb import main_bot_keyboard
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from database import Database
-# from vk_parsing import vk_parsing_func
+from vk_parsing import vk_parsing_func
 import configparser
+from aiogram.utils.exceptions import TimeoutWarning
 from asyncio.exceptions import TimeoutError
-import asyncio
 #Initializing
 config = configparser.ConfigParser()
 config.read('config.ini')
@@ -27,9 +27,10 @@ db = Database('fb_db.db')
 async def on_start_parsing(message: types.Message):
     fb_posts = []
     
-    try:
-        await bot.send_message(message.chat.id, 'Привет! Начинаю работу...')
-        for i in db.make_array_from_groups_list(message.chat.id):
+    
+    await bot.send_message(message.chat.id, 'Привет! Начинаю работу...')
+    for i in db.make_array_from_groups_list(message.chat.id):
+        try:
             curent_channel = db.select_channel_id_by_group(message.chat.id)
             if i.split('/')[2] == 'facebook.com':
                 print('Начало парсинга')
@@ -37,9 +38,9 @@ async def on_start_parsing(message: types.Message):
                 print(res)
                 if res != None:
                     if res['text'] not in fb_posts:
+                        fb_posts.append(res['text'])
                         caption = f'Есть совпадение по слову {res["keyword"]}:\n{res["text"]}\nнайденно в группе:{res["group"]},\nЛокация: {res["place"]}\nСсылка:{res["link"]}'
                         caption_for_channel = f'{res["text"]}\n\nЛокация: {res["place"]}'
-                        fb_posts.append(res['text'])
                         if res['image'] != 'Изображение отсутствует':
                             try:
                                 await bot.send_message(message.chat.id,text=caption)
@@ -56,36 +57,42 @@ async def on_start_parsing(message: types.Message):
         
 
             
-                # elif i.split('/')[2] == 'vk.com':
-                #     if message.chat.type == "private":
-                #         res = vk_parsing_func(i)
-                #         if res != None:
-                #             try:
-                #                 await bot.send_photo(message.chat.id, f"{res['img']}")
-                #                 await bot.send_message(message.chat.id, f"{res['text']} \n {res['link']}")
-                #             except:
-                #                 await bot.send_message(message.chat.id, f"{res['text']} \n {res['link']}")
-                #     else:
-                #         res = vk_parsing_func(i)
-                #         if res != None:
-                #             try:
-                #                 await bot.send_photo(get_channel_id(), f"{res['img']}")
-                #                 await bot.send_message(get_channel_id(), f"{res['text']}")
-                #             except:
-                #                 await bot.send_message(get_channel_id(), f"{res['text']}")
+            elif i.split('/')[2] == 'vk.com':
+                if message.chat.type == "private":
+                    res = vk_parsing_func(i)
+                    if res['text'] not in fb_posts:
+                        fb_posts.append(res['text'])
+                        if res != None:
+                            try:
+                                for img in res['images']:
+                                    await bot.send_photo(message.chat.id, img)
+                                    await bot.send_message(message.chat.id, f"{res['text']} \n {res['url']}")
+                            except:
+                                await bot.send_message(message.chat.id, f"{res['text']} \n {res['url']}")
+                        else:
+                            res = vk_parsing_func(i)
+                            if res != None:
+                                try:
+                                    for img in res['images']:
+                                        await bot.send_photo(get_channel_id(), )
+                                        await bot.send_message(get_channel_id(), f"{res['text']}")
+                                except:
+                                    await bot.send_message(get_channel_id(), f"{res['text']}")
 
-                # else:
-                #     await bot.send_message(message.chat.id, 'Ссылка указана неверно')
-                    else:
-                        await bot.send_message(message.chat.id, 'Ничего не найденно')
-    except TimeoutError:
-        pass
+            else:
+                await bot.send_message(message.chat.id, 'Ссылка указана неверно')
+        except TimeoutWarning:
+            continue
+        except TimeoutError:
+            continue
+        except Exception as ex:
+            print(ex)
 
 #---------------------------START-----------------------------------------
 
 @dp.message_handler(commands=['start'])
 async def on_start(message: types.Message):
-    await bot.send_message(message.chat.id, text='Здравствуйте!, чтобы зарегистрировать группы, перейдите по этой ссылке: {link}', reply_markup=main_bot_keyboard)
+    await bot.send_message(message.chat.id, text='Здравствуйте!, чтобы зарегистрировать группы, перейдите по этой ссылке: https://t.me/facebook_vk_tg_registrationBOT', reply_markup=main_bot_keyboard)
     
 #----------------------------GET CURRENT CHAT ID--------------------------
 @dp.message_handler(commands=['Получить_ID'])
