@@ -1,67 +1,51 @@
-
-from time import sleep
-from selenium import webdriver
+import requests
+from configparser import ConfigParser
+import json
 from data import get_words, get_kv_words
-from selenium.webdriver.firefox.options import Options
-import pickle
-from fake_useragent import UserAgent
+def vk_parsing_func(group_name):
+    config = ConfigParser()
+    config.read('vk_config.ini')
+    api_key = config['VK']['api_key']
+    url = f'https://api.vk.com/method/wall.get?domain={group_name}&count=30&access_token={api_key}&v=5.131'
+    req = requests.get(url)
+    src = req.json()
+    posts = src['response']['items']
+    post_photo = []
+    for post in posts:
 
-def vk_parsing_func(url):
-    ua = UserAgent()
-    options = Options()
-    options.add_argument('--headless')
-    options.add_argument('--no-sandbox')
-    options.set_preference('dom.webdriver.enabled', False)
-    options.set_preference('dom.webnotifications.enabled', False)
-    options.set_preference('dom.volume_scale', '0.0')
-    options.add_argument(f'User-Agent: {ua.random}')
-    driver = webdriver.Firefox(executable_path='/home/tgbot/geckodriver', options=options)
-    driver.maximize_window()
-    #Autoriazation
-    print('Идёт авторизация..')
-    driver.get('https://vk.com')
-    sleep(5)
-    for cookie in pickle.load(open('cookies_vk_new', 'rb')):
-        driver.add_cookie(cookie)
-    sleep(5)
-    driver.refresh()
-    sleep(5)
-    print('Авторизация пройдена')
-    print('Переход по ссылке..')
-    driver.get(url=url)
-    sleep(5)
-    driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-    sleep(1)
-    driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-    sleep(1)
-    driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-    sleep(1)
-    driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-    sleep(5)
-    print('Поиск...')
-    divs = driver.find_elements_by_class_name('_post_content')
-    driver.get_screenshot_as_file('vk_image.png')
-    for words in divs:
+        post_id = post["id"]
+        print(f"Отправляем пост с ID {post_id}")
+
         try:
-            more_btn = words.find_element_by_class_name('PostTextMore__content')
-            more_btn.click()
-        except:
-            pass
-        text = words.find_element_by_class_name('wall_post_text').text
-        splitted_text = text.lower().split()
-        for keyword in get_words():
-            for kv_keyword in get_kv_words():
-                if keyword in splitted_text and kv_keyword in splitted_text():
-                    try:
-                        images = []
-                        imgs = words.find_elements_by_class_name('MediaGrid__imageSingle')
-                        for img in imgs:
-                            images.append(img.get_attribure('src'))
-                    except:
-                        images = 'Изображения не найденны'
-                    result = {
-                        'text':text,
-                        'images':images,
-                        'url':url,
-                    }
-                    return result
+                
+            post_text = post['text']
+            splitted_text = post_text.lower().split()
+            for keyword in get_words():
+                for kv_keyword in get_kv_words():
+                    if keyword in splitted_text and kv_keyword in splitted_text:
+
+                        if "attachments" in post:
+                            post_attachments = post["attachments"]
+                            # забираем фото
+                            if post_attachments[0]["type"] == "photo":
+                                photo_sizes = post_attachments[0]['photo']['sizes']
+                                post_photo.append(photo_sizes[-1]['url'])
+                            
+                            
+                        return {
+                            'text':post_text,
+                            'photo':post_photo
+                        }
+                        
+
+                    
+                    
+
+                    
+        except Exception:
+                print(f"Что-то пошло не так с постом ID {post_id}")
+
+
+
+link = 'https://vk.com/argentina_russia'
+vk_parsing_func(link.split('/')[3])
