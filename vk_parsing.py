@@ -45,7 +45,3 @@ def vk_parsing_func(group_name):
         except Exception:
                 print(f"Что-то пошло не так с постом ID {post_id}")
 
-
-
-link = 'https://vk.com/argentina_russia'
-vk_parsing_func(link.split('/')[3])
