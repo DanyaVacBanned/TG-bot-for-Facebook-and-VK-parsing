@@ -36,11 +36,7 @@ def vk_parsing_func(group_name):
                             'text':post_text,
                             'photo':post_photo
                         }
-                        
-
-                    
-                    
-
+                    ]
                     
         except Exception:
                 print(f"Что-то пошло не так с постом ID {post_id}")
