@@ -1,11 +1,11 @@
 
 from random import choice
-from time import sleep
 from selenium import webdriver
+import asyncio
 from data import get_words, get_kv_words
 from selenium.webdriver.firefox.options import Options
 import pickle
-def parsing(url):
+async def parsing(url):
     options = Options()
     options.add_argument('--headless')
     options.add_argument('--no-sandbox')
@@ -18,15 +18,16 @@ def parsing(url):
     #Autoriazation
     print('Идёт авторизация..')
     driver.get('https://facebook.com')
-    sleep(5)
+    await asyncio.sleep(2)
     for cookie in pickle.load(open('cookies_boris_fb', 'rb')):
         driver.add_cookie(cookie)
-    sleep(5)
+   
     driver.refresh()
-    sleep(5)
+    await asyncio.sleep(2)
     print('Авторизация пройдена')
     print('Переход по ссылке..')
     driver.get(url=url)
+    await asyncio.sleep(5)
     try:
         accept_cookie = driver.find_element_by_class_name('_9xo7')
         accept_cookie.click()
@@ -47,29 +48,23 @@ def parsing(url):
         accept_all_cookies.click()
     except:
         pass
-    sleep(20)
+    await asyncio.sleep(5)
     driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-    sleep(1)
+    await asyncio.sleep(1)
     driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-    sleep(1)
+    await asyncio.sleep(1)
     driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-    sleep(1)
+    await asyncio.sleep(1)
     driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-    sleep(5)
+    await asyncio.sleep(10)
     print('Поиск...')
     divs = driver.find_elements_by_class_name('xquyuld')
     driver.get_screenshot_as_file('image.png')
-    
-    sleep(5)
-    
-    
-    for words in divs[2:]:
-                                    
-                               
+
+    for words in divs[2:]:                                             
         try:                                               
             try:                                            
-                more = words.find_element_by_css_selector('div.x1i10hfl.xjbqb8w.x6umtig.x1b1mbwd.xaqea5y.xav7gou.x9f619.x1ypdohk.xt0psk2.xe8uvvx.xdj266r.x11i5rnm.xat24cr.x1mh8g0r.xexx8yu.x4uap5.x18d9i69.xkhd6sd.x16tdsg8.x1hl2dhg.xggy1nq.x1a2a7pz.xt0b8zv.xzsf02u.x1s688f')
-                sleep(5)                                   
+                more = words.find_element_by_css_selector('div.x1i10hfl.xjbqb8w.x6umtig.x1b1mbwd.xaqea5y.xav7gou.x9f619.x1ypdohk.xt0psk2.xe8uvvx.xdj266r.x11i5rnm.xat24cr.x1mh8g0r.xexx8yu.x4uap5.x18d9i69.xkhd6sd.x16tdsg8.x1hl2dhg.xggy1nq.x1a2a7pz.xt0b8zv.xzsf02u.x1s688f')                                  
                 more.click()
             except:
                 pass
@@ -107,7 +102,7 @@ def parsing(url):
                     try:
                         pick_on_post = words.find_element_by_css_selector('img.x1ey2m1c.xds687c.x5yr21d.x10l6tqk.x17qophe.x13vifvy.xh8yej3')
                         pick_on_post.click()
-                        sleep(5)
+                        
                         link_on_post = driver.current_url
                     except:
                         link_on_post = url
