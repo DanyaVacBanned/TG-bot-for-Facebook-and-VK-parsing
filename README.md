@@ -6,4 +6,7 @@ This is Telegram bot, writed on aiogram for posts rental announcements from face
 -Telethon<br>
 -fake_useragent
 
-
+<p>
+<h3> TODO </h3>
+</p>
+<p>Make a normal project architecture</p>
