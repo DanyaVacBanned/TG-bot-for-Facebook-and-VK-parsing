@@ -21,3 +21,8 @@ def tmp_get():
     with open('tmp.txt','r',encoding='utf-8') as f:
         return f.read().strip()
 
+def get_channel_id():
+    with open('channel_id.txt','r',encoding='utf-8') as f:
+        return f.read().strip()
+        
+    
