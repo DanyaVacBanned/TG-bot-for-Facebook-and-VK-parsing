@@ -72,8 +72,8 @@ async def on_start_parsing(message, preset_name):
                         else:
                             await bot.send_message(currentChat, f"{res['text']}\n{res['link']}")
 
-                except Exception:
-                    print(Exception)
+                except Exception as ex:
+                    print(ex)
                     continue
 
 
@@ -99,7 +99,6 @@ async def startapp(message: types.Message):
         sleep(1)
     await bot.send_message(message.chat.id, 'Введите имя выбранного пресета')
 
-    
     
 
 @dp.message_handler(state=ParsingSettings.preset_name)

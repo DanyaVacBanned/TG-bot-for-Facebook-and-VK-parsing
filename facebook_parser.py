@@ -1,5 +1,7 @@
 from selenium.webdriver.support.wait import WebDriverWait
+from selenium import webdriver
 import selenium.webdriver.support.expected_conditions as EX
+from selenium.webdriver.common.service import Service
 import asyncio
 from data import get_words, get_kv_words
 import pickle
@@ -11,19 +13,22 @@ from selenium_stealth import stealth
 from selenium.common.exceptions import NoSuchElementException
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
+
+
 db = Database('fb_db.db')
 
 
 
 async def facebookParsing(url, name):
+    chromedriver_path = r'chromedriver'
+    s = Service(chromedriver_path)
     ua = UserAgent()
     result_list = []
     options = Options()
     options.add_argument('--headless')
     options.add_argument('--no-sandbox')
     options.add_argument(f'User-Agent: {ua.random}')
-    s = Service(executable_path='/home/tgbot/chromedriver')
-    driver = webdriver.Chrome(service=s, options=options)
+    driver = webdriver.Chrome(options=options,service=s)
     stealth(driver,
         languages=["en-US", "en"],
         vendor="Google Inc.",
@@ -37,12 +42,13 @@ async def facebookParsing(url, name):
     print('Идет авторизация...')
     driver.get('https://facebook.com')
     await asyncio.sleep(2)
-    for cookie in pickle.load(open('cookies_fb', 'rb')):
+    for cookie in pickle.load(open('cookies_boris_fb', 'rb')):
         driver.add_cookie(cookie)
 
     driver.refresh()
     await asyncio.sleep(2)
     print('Авторизация пройдена')
+    driver.get_screenshot_as_file('after auth.png')
     print('Переход по ссылке..')
     driver.get(url=url)
     await asyncio.sleep(3)
@@ -71,7 +77,7 @@ async def facebookParsing(url, name):
     # except:
     #     pass
     
-    driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+    # driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
     await asyncio.sleep(10)
     driver.get_screenshot_as_file('fb_parser.png')
     
