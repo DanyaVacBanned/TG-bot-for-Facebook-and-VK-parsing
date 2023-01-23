@@ -3,7 +3,7 @@ from configparser import ConfigParser
 from telethon.tl.functions.messages import GetHistoryRequest
 from database import Database
 import asyncio
-from data import get_words, get_kv_words
+from data import get_words
 import random
 import string
 async def telegram_parser(url, preset_name):

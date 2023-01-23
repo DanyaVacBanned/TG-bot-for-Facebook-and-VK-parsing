@@ -11,3 +11,5 @@ geckodriver
 keywords_.txt
 telegram_config.ini
 vk_config.ini
+admin_id.txt
+__pycache__/

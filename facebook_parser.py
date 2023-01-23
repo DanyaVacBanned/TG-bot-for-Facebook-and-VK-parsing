@@ -3,7 +3,7 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.service import Service
 import asyncio
-from data import get_words, get_kv_words
+from data import get_words
 import pickle
 from fake_useragent import UserAgent
 from selenium.webdriver.common.by import By

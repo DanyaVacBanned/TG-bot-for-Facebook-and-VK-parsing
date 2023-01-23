@@ -1,6 +1,6 @@
 import requests
 from configparser import ConfigParser
-from data import get_words, get_kv_words
+from data import get_words
 def vk_parsing_func(group_name, preset_name):
     config = ConfigParser()
     config.read('vk_config.ini')
