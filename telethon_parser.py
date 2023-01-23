@@ -7,8 +7,10 @@ from data import get_words, get_kv_words
 import random
 import string
 async def telegram_parser(url, preset_name):
+    
     loop = asyncio.new_event_loop()
     db = Database('fb_db.db')
+    db.create_table(preset_name)
     messageName = ''
     config = ConfigParser()
     config.read('telegram_config.ini')
@@ -45,12 +47,12 @@ async def telegram_parser(url, preset_name):
                     continue
                 for keyword in get_words(preset_name):
                     for kv_keyword in get_kv_words():
-                        if (keyword in stripped_message) and (kv_keyword in stripped_message) and (message.message not in db.make_array_from_post_content_data()):
+                        if (keyword in stripped_message) and (kv_keyword in stripped_message) and (message.message not in db.make_array_from_post_content_data(preset_name)):
                             messageName = randomNameGen()
                             if message.photo:
                                 await client.download_media(message,f'photos/{messageName}.jpg')
                                 hasPhoto = True
-                            db.insert_post_content(message.message)
+                            db.insert_post_content(message.message, preset_name)
                             all_messages.append(
                                 {
                                     'message':message.message,

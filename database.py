@@ -71,7 +71,7 @@ class Database:
     
     def create_table(self, name):
         self.cursor.execute(
-        f"""CREATE TABLE {name}
+        f"""CREATE TABLE IF NOT EXISTS {name}
         (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         text TEXT

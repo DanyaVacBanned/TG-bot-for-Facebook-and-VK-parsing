@@ -19,6 +19,7 @@ db = Database('fb_db.db')
 
 
 async def facebookParsing(url, name):
+    db.create_table(name=name)
     chromedriver_path = r'chromedriver'
     ua = UserAgent()
     result_list = []
@@ -110,8 +111,8 @@ async def facebookParsing(url, name):
         
         for keyword in get_words(name):
             for kv_keyword in get_kv_words():
-                if (keyword in splitted_text) and (kv_keyword in splitted_text) and (text_ not in db.make_array_from_post_content_data()):
-                    db.insert_post_content(text_)
+                if (keyword in splitted_text) and (kv_keyword in splitted_text) and (text_ not in db.make_array_from_post_content_data(name)):
+                    db.insert_post_content(text_, name)
                     try:
                         lnk = words.find_element(By.CLASS_NAME,'xaqea5y').get_attribute('href')
                     except NoSuchElementException:

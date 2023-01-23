@@ -48,10 +48,12 @@ async def on_start_parsing(message, preset_name):
 
 
             elif group.split('/')[2] == 'vk.com':
+                db.create_table(preset_name)
                 try:
+
                     result = vk_parsing_func(group_name=group.split('/')[3], preset_name=preset_name)
-                    if result['text'] not in db.make_array_from_post_content_data():
-                        db.insert_post_content(result['text'])
+                    if result['text'] not in db.make_array_from_post_content_data(preset_name):
+                        db.insert_post_content(result['text'], preset_name)
                         await bot.send_message(currentChat, result['text'])
 
                         if result['photo'] is not None:
