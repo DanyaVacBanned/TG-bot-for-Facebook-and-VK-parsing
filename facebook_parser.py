@@ -1,18 +1,17 @@
-from selenium.webdriver.support.wait import WebDriverWait
+
 from selenium import webdriver
-import selenium.webdriver.support.expected_conditions as EX
+from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.service import Service
 import asyncio
 from data import get_words, get_kv_words
 import pickle
 from fake_useragent import UserAgent
 from selenium.webdriver.common.by import By
+
 from database import Database
-from selenium.webdriver.chrome.service import Service
 from selenium_stealth import stealth
 from selenium.common.exceptions import NoSuchElementException
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
+
 
 
 db = Database('fb_db.db')
@@ -21,14 +20,13 @@ db = Database('fb_db.db')
 
 async def facebookParsing(url, name):
     chromedriver_path = r'chromedriver'
-    s = Service(chromedriver_path)
     ua = UserAgent()
     result_list = []
     options = Options()
     options.add_argument('--headless')
     options.add_argument('--no-sandbox')
     options.add_argument(f'User-Agent: {ua.random}')
-    driver = webdriver.Chrome(options=options,service=s)
+    driver = webdriver.Chrome(options=options, executable_path=chromedriver_path)
     stealth(driver,
         languages=["en-US", "en"],
         vendor="Google Inc.",
@@ -138,5 +136,7 @@ async def facebookParsing(url, name):
     driver.close()
     driver.quit()
     return result_list
+
+
 
 

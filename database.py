@@ -40,32 +40,43 @@ class Database:
             self.cursor.execute("DELETE FROM groups")
             self.cursor.execute("DELETE FROM channel_ids")
             self.cursor.execute("DELETE FROM post_content")
-
-    def insert_post_content(self, text):
+#------------------post content-------------------------------------------
+    def insert_post_content(self, text, name):
         with self.connection:
-            self.cursor.execute('INSERT INTO post_content (text) VALUES (?)',(text,))
+            self.cursor.execute(f'INSERT INTO {name} (text) VALUES (?)',(text,))
 
-    def select_post_content(self):
+    def select_post_content(self, name):
         with self.connection:
-            return self.cursor.execute('SELECT * FROM post_content').fetchall()
+            return self.cursor.execute(f'SELECT * FROM {name}').fetchall()
 
 
-    def make_array_from_post_content_data(self):
+    def make_array_from_post_content_data(self, name):
         with self.connection:
             post_content_list = []
-            data = self.cursor.execute("SELECT * FROM post_content").fetchall()
+            data = self.cursor.execute(f"SELECT * FROM {name}").fetchall()
             for row in data:
                 post_content_list.append(row[1])
             if post_content_list == []:
                 return ['zero']
             return(post_content_list)
     
-    def reset_post_content_data(self):
+    def reset_post_content_data(self, name):
         with self.connection:
-            self.cursor.execute('DELETE FROM post_content')
+            self.cursor.execute(f'DELETE FROM {name}')
+#--------------------------------------------------------------------------
     def reset_groups_data(self):
         with self.connection:
             self.cursor.execute("DELETE FROM groups")
+
+    
+    def create_table(self, name):
+        self.cursor.execute(
+        f"""CREATE TABLE {name}
+        (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        text TEXT
+        )"""
+    )
     
     # def reset_groups_for_picked_channel(self, chatId):
     #     with self.connection:
