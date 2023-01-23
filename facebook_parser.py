@@ -110,29 +110,29 @@ async def facebookParsing(url, name):
             continue
         
         for keyword in get_words(name):
-            for kv_keyword in get_kv_words():
-                if (keyword in splitted_text) and (kv_keyword in splitted_text) and (text_ not in db.make_array_from_post_content_data(name)):
-                    db.insert_post_content(text_, name)
-                    try:
-                        lnk = words.find_element(By.CLASS_NAME,'xaqea5y').get_attribute('href')
-                    except NoSuchElementException:
-                        lnk = 'Ссылка не найдена'
 
-                    try:
-                        pictures = words.find_elements(By.CSS_SELECTOR,'img.x1ey2m1c.xds687c.x5yr21d.x10l6tqk.x17qophe.x13vifvy.xh8yej3')
-                        img = []
-                        for pic in pictures:
-                            img.append(pic.get_attribute('src'))
-                    except NoSuchElementException:
-                        img = 'Изображение отсутствует'
+            if (keyword in splitted_text) and (text_ not in db.make_array_from_post_content_data(name)):
+                db.insert_post_content(text_, name)
+                try:
+                    lnk = words.find_element(By.CLASS_NAME,'xaqea5y').get_attribute('href')
+                except NoSuchElementException:
+                    lnk = 'Ссылка не найдена'
+
+                try:
+                    pictures = words.find_elements(By.CSS_SELECTOR,'img.x1ey2m1c.xds687c.x5yr21d.x10l6tqk.x17qophe.x13vifvy.xh8yej3')
+                    img = []
+                    for pic in pictures:
+                        img.append(pic.get_attribute('src'))
+                except NoSuchElementException:
+                    img = 'Изображение отсутствует'
+                
+                result = {
+                    'text':text_,
+                    'link':lnk,
+                    'image':img,
                     
-                    result = {
-                        'text':text_,
-                        'link':lnk,
-                        'image':img,
-                        
-                    }
-                    result_list.append(result)
+                }
+                result_list.append(result)
                     
     driver.close()
     driver.quit()

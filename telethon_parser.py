@@ -46,20 +46,20 @@ async def telegram_parser(url, preset_name):
                 except:
                     continue
                 for keyword in get_words(preset_name):
-                    for kv_keyword in get_kv_words():
-                        if (keyword in stripped_message) and (kv_keyword in stripped_message) and (message.message not in db.make_array_from_post_content_data(preset_name)):
-                            messageName = randomNameGen()
-                            if message.photo:
-                                await client.download_media(message,f'photos/{messageName}.jpg')
-                                hasPhoto = True
-                            db.insert_post_content(message.message, preset_name)
-                            all_messages.append(
-                                {
-                                    'message':message.message,
-                                    'messageName':messageName,
-                                    'hasPhoto':hasPhoto
-                                }
-                            )
+
+                    if (keyword in stripped_message) and (message.message not in db.make_array_from_post_content_data(preset_name)):
+                        messageName = randomNameGen()
+                        if message.photo:
+                            await client.download_media(message,f'photos/{messageName}.jpg')
+                            hasPhoto = True
+                        db.insert_post_content(message.message, preset_name)
+                        all_messages.append(
+                            {
+                                'message':message.message,
+                                'messageName':messageName,
+                                'hasPhoto':hasPhoto
+                            }
+                        )
             
             offset_id = messages[len(messages)-1].id
             if total_count_limit != 0 and total_messages >= total_count_limit:

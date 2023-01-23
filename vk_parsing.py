@@ -19,25 +19,25 @@ def vk_parsing_func(group_name, preset_name):
             post_text = post['text']
             splitted_text = post_text.lower().split()
             for keyword in get_words(preset_name):
-                for kv_keyword in get_kv_words():
-                    if keyword in splitted_text and kv_keyword in splitted_text:
+                if keyword in splitted_text:
 
-                        if "attachments" in post:
-                            post_attachments = post["attachments"]
-                            # забираем фото
-                            if post_attachments[0]["type"] == "photo":
-                                photo_sizes = post_attachments[0]['photo']['sizes']
-                                post_photo.append(photo_sizes[-1]['url'])
-                        else:
-                            post_photo = None
-                            
-                        return {
-                            'text':post_text,
-                            'photo':post_photo
-                        }
+                    if "attachments" in post:
+                        post_attachments = post["attachments"]
+                        # забираем фото
+                        if post_attachments[0]["type"] == "photo":
+                            photo_sizes = post_attachments[0]['photo']['sizes']
+                            post_photo.append(photo_sizes[-1]['url'])
+                    else:
+                        post_photo = None
+                        
+                    return {
+                        'text':post_text,
+                        'photo':post_photo
+                    }
                         
                     
-        except Exception:
+        except Exception as ex:
                 print(f"Что-то пошло не так с постом ID {post_id}")
+                print(ex)
 
 # print(vk_parsing_func('argentina_russia'))
