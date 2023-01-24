@@ -47,7 +47,7 @@ async def telegram_parser(url, preset_name):
                     continue
                 for keyword in get_words(preset_name):
 
-                    if (keyword in stripped_message): #and (message.message not in db.make_array_from_post_content_data(preset_name)):
+                    if (keyword in stripped_message) and (message.message not in db.make_array_from_post_content_data(preset_name)):
                         messageName = randomNameGen()
                         if message.photo:
                             await client.download_media(message,f'photos/{messageName}.jpg')
