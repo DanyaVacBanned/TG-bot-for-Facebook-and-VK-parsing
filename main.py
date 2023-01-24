@@ -37,7 +37,7 @@ async def on_start_parsing(message, preset_name):
                 try:
                     result = await telegram_parser(group, preset_name)
                     for mess in result:
-                        await bot.send_message(currentChat, mess['message'])
+                        await bot.send_message(currentChat, f"{mess['message']}\nСсылка на пост: {mess['url']}")
                         await asyncio.sleep(5)
                         if mess['hasPhoto'] == True:
                             await bot.send_photo(currentChat, open(f'photos/{mess["messageName"]}.jpg', 'rb'))
@@ -62,21 +62,22 @@ async def on_start_parsing(message, preset_name):
                     continue
                         
             elif group.split('/')[2] == 'facebook.com':
-                try:
-                    result = await facebookParsing(group, preset_name)
-                    for res in result:
-                        if res['image'] != 'Изображение отсутствует':
-                            await bot.send_message(currentChat, f"{res['text']}\n{res['link']}")
-                            for img in res['image']:
-                                await bot.send_photo(currentChat, img)
-                                await asyncio.sleep(2)
+                pass
+                # try:
+                #     result = await facebookParsing(group, preset_name)
+                #     for res in result:
+                #         if res['image'] != 'Изображение отсутствует':
+                #             await bot.send_message(currentChat, f"{res['text']}\n{res['link']}")
+                #             for img in res['image']:
+                #                 await bot.send_photo(currentChat, img)
+                #                 await asyncio.sleep(2)
                             
-                        else:
-                            await bot.send_message(currentChat, f"{res['text']}\n{res['link']}")
+                #         else:
+                #             await bot.send_message(currentChat, f"{res['text']}\n{res['link']}")
 
-                except Exception as ex:
-                    print(ex)
-                    continue
+                # except Exception as ex:
+                #     print(ex)
+                #     continue
 
 
 
