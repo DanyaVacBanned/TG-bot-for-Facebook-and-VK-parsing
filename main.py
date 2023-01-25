@@ -60,6 +60,9 @@ async def on_start_parsing(message, preset_name):
                             await bot.send_message(currentChat, result['photo'])
                 except TypeError:
                     continue
+                except Exception as ex:
+                    print(ex)
+                    continue
                         
             elif group.split('/')[2] == 'facebook.com':
                 pass
