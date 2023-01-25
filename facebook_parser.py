@@ -41,7 +41,7 @@ async def facebookParsing(url, name):
     print('Идет авторизация...')
     driver.get('https://facebook.com')
     await asyncio.sleep(2)
-    for cookie in pickle.load(open('cookies_boris_fb', 'rb')):
+    for cookie in pickle.load(open('fb_boris_toptunov_cookies', 'rb')):
         driver.add_cookie(cookie)
 
     driver.refresh()
