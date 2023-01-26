@@ -76,7 +76,11 @@ async def facebookParsing(url, name):
     # except:
     #     pass
     
-    # driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+    driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+    await asyncio.sleep(2)
+    driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+    await asyncio.sleep(2)
+    driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
     await asyncio.sleep(10)
     driver.get_screenshot_as_file('fb_parser.png')
     
