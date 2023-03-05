@@ -14,7 +14,7 @@ async def telegram_parser(url, preset_name):
     config.read('telegram_config.ini')
     api_id = config['Telegram']['api_id']
     api_hash = config['Telegram']['api_hash']
-    client = TelegramClient('+79674699128', api_id=api_id, api_hash=api_hash, loop = loop)
+    client = TelegramClient('Phone_number', api_id=api_id, api_hash=api_hash, loop = loop)
     async with client:
         target_group = url
         offset_id = 0
