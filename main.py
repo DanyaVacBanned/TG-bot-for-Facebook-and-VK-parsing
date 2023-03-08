@@ -8,7 +8,7 @@ from telethon_parser import telegram_parser
 import shutil
 import os
 from kb import main_bot_keyboard
-from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
+from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeyboardRemove
 from database import Database
 from vk_parsing import vk_parsing_func
 import configparser
@@ -102,7 +102,6 @@ async def startapp(message: types.Message):
     for file in files:
         file_name = file.replace('.txt','')
         await bot.send_message(message.chat.id, file_name)
-        sleep(1)
     await bot.send_message(message.chat.id, 'Введите имя выбранного пресета')
 
     
@@ -111,7 +110,7 @@ async def startapp(message: types.Message):
 async def start_parsing(message: types.Message, state=FSMContext):
     preset_name = message.text
     await state.finish()
-    asyncio.create_task(on_start_parsing(message, preset_name=preset_name))
+    asyncio.run(await on_start_parsing(message, preset_name=preset_name))
 
 @dp.message_handler(commands=['start'])
 async def start_bot(message: types.Message):
@@ -132,8 +131,7 @@ async def register_groups(message: types.Message):
 @dp.message_handler(state=Groups.groups_list)
 async def handle_groups_list(message: types.Message, state=FSMContext):
     db.add_new_list(message.chat.id, message.text)
-    await Groups.next()
-    await bot.send_message(message.chat.id, 'Введите id канала для парсинга')
+    await bot.send_message(message.chat.id, 'Группы успешно зарегистрированны')
     await state.finish()
 
 
@@ -142,7 +140,7 @@ async def handle_groups_list(message: types.Message, state=FSMContext):
 #---------------------------------DELETE GROUPS-------------------------------------------
 @dp.message_handler(text='-Удалить список групп❌-')
 async def handleDeleteGroups(message: types.Message):
-    db.reset_groups_for_picked_channel(message.chat.id)
+    db.reset_groups(message.chat.id)
     await bot.send_message(message.chat.id, 'Группы успешно удаленны')
 
 
@@ -200,6 +198,12 @@ async def handle_preset_name_for_delete(message: types.Message, state=FSMContext
         await bot.send_message(message.chat.id,'Такого пресета не существует')
     finally:
         await state.finish()
+
+
+
+@dp.message_handler(text='-Спрятать клавиатуру🔰-')
+async def hide_keyboard_func(message: types.Message):
+    await message.answer('Клавиатура спрятана', reply_markup=ReplyKeyboardRemove())
 
 
 #-----------------------------------COMMENTS-------------------------------------------------------------------

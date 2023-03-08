@@ -63,6 +63,10 @@ class Database:
     def reset_post_content_data(self, name):
         with self.connection:
             self.cursor.execute(f'DELETE FROM {name}')
+
+    def reset_groups(self, chat_id):
+        with self.connection:
+            self.cursor.execute(f"DELETE FROM groups WHERE id = ?",(chat_id,))
 #--------------------------------------------------------------------------
     def reset_groups_data(self):
         with self.connection:

@@ -2,6 +2,7 @@
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.service import Service
+from undetected_chromedriver import Chrome, ChromeOptions
 import asyncio
 from data import get_words
 import pickle
@@ -23,19 +24,19 @@ async def facebookParsing(url, name):
     chromedriver_path = r'chromedriver'
     ua = UserAgent()
     result_list = []
-    options = Options()
-    options.add_argument('--headless')
-    options.add_argument('--no-sandbox')
-    options.add_argument(f'User-Agent: {ua.random}')
-    driver = webdriver.Chrome(options=options, executable_path=chromedriver_path)
-    stealth(driver,
-        languages=["en-US", "en"],
-        vendor="Google Inc.",
-        platform="Win32",
-        webgl_vendor="Intel Inc.",
-        renderer="Intel Iris OpenGL Engine",
-        fix_hairline=True,
-        )
+    # options = ChromeOptions()
+    # options.add_argument('--headless')
+    # options.add_argument('--no-sandbox')
+    # options.add_argument(f'User-Agent: {ua.random}')
+    driver = Chrome(headless=True, no_sandbox=True)
+    # stealth(driver,
+    #     languages=["en-US", "en"],
+    #     vendor="Google Inc.",
+    #     platform="Win32",
+    #     webgl_vendor="Intel Inc.",
+    #     renderer="Intel Iris OpenGL Engine",
+    #     fix_hairline=True,
+    #     )
     driver.maximize_window()
 
     print('Идет авторизация...')
@@ -47,10 +48,10 @@ async def facebookParsing(url, name):
     driver.refresh()
     await asyncio.sleep(2)
     print('Авторизация пройдена')
-    driver.get_screenshot_as_file('after auth.png')
+    # driver.get_screenshot_as_file('after auth.png')
     print('Переход по ссылке..')
     driver.get(url=url)
-    await asyncio.sleep(3)
+    await asyncio.sleep(5)
     # try:
     #     driver.find_element(By.CSS_SELECTOR, 'div.x1lliihq.x6ikm8r.x10wlt62.x1n2onr6.xlyipyv.xuxw1ft').click()
     # except:
@@ -77,11 +78,10 @@ async def facebookParsing(url, name):
     #     pass
     
     driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-    await asyncio.sleep(2)
-    driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-    await asyncio.sleep(2)
-    driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-    await asyncio.sleep(10)
+
+    
+    
+    await asyncio.sleep(5)
     driver.get_screenshot_as_file('fb_parser.png')
     
     divs = driver.find_elements(By.CLASS_NAME,'xquyuld')

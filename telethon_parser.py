@@ -20,8 +20,8 @@ async def telegram_parser(url, preset_name):
     async with client:
         target_group = url
         offset_id = 0
-        limit = 100
-        total_messages = 0
+        limit = 10
+        total_messages = 10
         total_count_limit = 5
         all_messages = []
         num = 0
@@ -76,3 +76,4 @@ def randomNameGen():
     return result
 
  
+# print(asyncio.run(telegram_parser('https://t.me/Nedvizhimostvdominikane', 'keywords_kv')))
